@@ -1,0 +1,28 @@
+version: '2'
+services:
+  app:
+    environment:
+      - DB_NAME=vehicles
+      - DB_USER=postgres
+      - DB_PASSWORD=root
+      - DB_HOST=db
+      - DB_PORT=5434
+    build:
+      context: .
+      args:
+        - ENVIRONMENT=development
+    depends_on:
+      - db
+    volumes:
+      - ./:/usr/src/app
+    ports:
+      - 9001:5000
+    links:
+      - db
+  db:
+    image: postgres:9.6-alpine
+    environment:
+      - POSTGRES_DB=vehicles
+      - POSTGRES_PASSWORD=root
+    ports:
+      - 5434:5432
