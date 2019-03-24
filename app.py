@@ -22,91 +22,13 @@ app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 
-tasks = [
-    {
-        'id': 1,
-        'title': u'Macedes Benz',
-        'description': u'A nice long lasting car, maintenance though',
-        'done': False
-    },
-    {
-        'id': 2,
-        'title': u'Volkswagan VW',
-        'description': u'Need to find a good Python tutorial on the web',
-        'done': False
-    },
-    {
-        'id': 3,
-        'title': u'Toyota Land cruiser',
-        'description': u'Need to find a good way of handling assignments',
-        'done': False
-    }
-]
 
-
-def make_public_task(task):
-    new_task = {}
-    for field in task:
+def make_public_vehicle_make(make):
+    new_vehicle_make = {}
+    for field in make:
         if field == 'id':
-            new_task['uri'] = url_for('get_task', task_id=task['id'], _external=True)
-        else:
-            new_task[field] = task[field]
-    return new_task
-
-
-@app.route('/vehicles/api/v1.0/tasks', methods=['POST'])
-def create_task():
-    if not request.json or not 'title' in request.json:
-        abort(400)
-    task = {
-        'id': tasks[-1]['id'] + 1,
-        'title': request.json['title'],
-        'description': request.json.get('description', ""),
-        'done': False
-    }
-    tasks.append(task)
-    return jsonify({'task': task}), 201
-
-
-@app.route('/vehicles/api/v1.0/tasks', methods=['GET'])
-def get_tasks():
-    return jsonify({'tasks': [make_public_task(task) for task in tasks]})
-
-
-@app.route('/vehicles/api/v1.0/tasks/<int:task_id>', methods=['GET'])
-def get_task(task_id):
-    task = [task for task in tasks if task['id'] == task_id]
-    if len(task) == 0:
-        abort(404)
-    return jsonify({'task': make_public_task(task[0])})
-
-
-@app.route('/vehicles/api/v1.0/tasks/<int:task_id>', methods=['PUT'])
-def update_task(task_id):
-    task = [task for task in tasks if task['id'] == task_id]
-    if len(task) == 0:
-        abort(404)
-    if not request.json:
-        abort(400)
-    if 'title' in request.json and type(request.json['title']) != unicode:
-        abort(400)
-    if 'description' in request.json and type(request.json['description']) is not unicode:
-        abort(400)
-    if 'done' in request.json and type(request.json['done']) is not bool:
-        abort(400)
-    task[0]['title'] = request.json.get('title', task[0]['title'])
-    task[0]['description'] = request.json.get('description', task[0]['description'])
-    task[0]['done'] = request.json.get('done', task[0]['done'])
-    return jsonify({'task': task[0]})
-
-
-@app.route('/vehicles/api/v1.0/tasks/<int:task_id>', methods=['DELETE'])
-def delete_task(task_id):
-    task = [task for task in tasks if task['id'] == task_id]
-    if len(task) == 0:
-        abort(404)
-    tasks.remove(task[0])
-    return jsonify({'result': True})
+            new_vehicle_make['uri'] = url_for('get_vehicle_make', make_id=make['id'], _extenal=True)
+    return new_vehicle_make
 
 
 @app.errorhandler(404)
